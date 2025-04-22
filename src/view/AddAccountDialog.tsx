@@ -17,7 +17,7 @@ import {getUUID} from '../utils/UUIDUtils';
 import {saveData, getData} from '../utils/DBUtils';
 
 export const key = 'accountData';
-export const array = ['游戏', '平台', '银行卡', '其他'];
+export const array: string[] = ['游戏', '平台', '银行卡', '其他'];
 
 const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
     const [display, setDisplay] = useState(false);
@@ -77,10 +77,6 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
 
     const renderTitle = () => {
         const styles = StyleSheet.create({
-            title: {
-                marginTop: 10,
-                fontSize: 14,
-            },
             close: {
                 marginRight: 10,
                 marginTop: 5,
@@ -88,6 +84,10 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
                 height: 30,
                 right: 0,
                 position: 'absolute',
+            },
+            title: {
+                marginTop: 10,
+                fontSize: 14,
             },
             closeImg: {
                 tintColor: '#00000033',

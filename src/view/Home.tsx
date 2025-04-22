@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     Image,
     SectionList,
+    Animated,
 } from 'react-native';
 import {getData} from '../utils/DBUtils';
 import {key} from '../view/AddAccountDialog';
@@ -50,8 +51,35 @@ function Home() {
 
     const AddAccountRef = useRef(null);
 
+    //初始化所有头
+    const [datamap, setDatamap] = useState({
+        0: true,
+        1: true,
+        2: true,
+        3: true,
+    });
     const sectionRender = (info: any) => {
-        const {item, index} = info;
+        const {item, index, section} = info;
+        if (array[0] === section.title) {
+            if (!datamap[0]) {
+                return null;
+            }
+        }
+        if (array[1] === section.title) {
+            if (!datamap[1]) {
+                return null;
+            }
+        }
+        if (array[2] === section.title) {
+            if (!datamap[2]) {
+                return null;
+            }
+        }
+        if (array[3] === section.title) {
+            if (!datamap[3]) {
+                return null;
+            }
+        }
         const styles = StyleSheet.create({
             root: {
                 marginTop: 1,
@@ -62,7 +90,7 @@ function Home() {
                 flexDirection: 'row',
             },
             title: {
-                marginTop:6,
+                marginTop: 6,
                 marginLeft: 10,
                 fontSize: 12,
                 fontWeight: 'bold',
@@ -138,8 +166,34 @@ function Home() {
                     }
                 />
                 <Text style={styles.txt}>{section.title}</Text>
-                <TouchableOpacity style={styles.moreTouch}>
-                    <Image source={icon_arrow} style={styles.moreImg} />
+                <TouchableOpacity
+                    style={styles.moreTouch}
+                    onPress={() => {
+                        const newValue = JSON.parse(JSON.stringify(datamap));
+                        if (array[0] === section.title) {
+                            newValue[0] = !newValue[0];
+                        } else if (array[1] === section.title) {
+                            newValue[1] = !newValue[1];
+                        } else if (array[2] === section.title) {
+                            newValue[2] = !newValue[2];
+                        } else if (array[3] === section.title) {
+                            newValue[3] = !newValue[3];
+                        }
+                        setDatamap(newValue);
+                    }}>
+                    <Animated.Image
+                        source={icon_arrow}
+                        style={[
+                            styles.moreImg,
+                            {
+                                transform: [
+                                    {
+                                        rotate: '-90deg',
+                                    },
+                                ],
+                            },
+                        ]}
+                    />
                 </TouchableOpacity>
             </View>
         );
@@ -173,7 +227,7 @@ function Home() {
 const styles = StyleSheet.create({
     root: {
         alignItems: 'center',
-        backgroundColor: '#B8b8b8',
+        backgroundColor: '#ededed',
         width: '100%',
         height: '100%',
     },
