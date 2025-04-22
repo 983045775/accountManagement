@@ -58,7 +58,7 @@ function Home() {
         3: true,
     });
     const sectionRender = (info: any) => {
-        const {item, index, section} = info;
+        const {item, section} = info;
         if (array[0] === section.title) {
             if (!datamap[0]) {
                 return null;
@@ -119,6 +119,7 @@ function Home() {
             item => section.title === item,
         );
 
+        // @ts-ignore
         const isShow: boolean = datamap[findIndex];
         const styles = StyleSheet.create({
             root: {
