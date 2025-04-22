@@ -7,6 +7,8 @@ import {
     Image,
     Modal,
     TextInput,
+    KeyboardAvoidingView,
+    Platform,
 } from 'react-native';
 // @ts-ignore
 import icon_close from '../assets/icon_close_modal.png';
@@ -223,10 +225,10 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
             animationType={'fade'}
             transparent={true}
             statusBarTranslucent={true}
-            onRequestClose={() => {
-                hide();
-            }}>
-            <View style={[styles.root, StyleSheet.absoluteFill]}>
+            onRequestClose={hide}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+                style={[styles.root, StyleSheet.absoluteFill]}>
                 <View style={styles.viewRoot}>
                     {renderTitle()}
                     <Text style={styles.txt}>{'账号类型'}</Text>
@@ -239,7 +241,7 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
                     {txtInput(3)}
                     {saveButton()}
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         </Modal>
     );
 });
