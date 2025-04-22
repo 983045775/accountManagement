@@ -16,9 +16,10 @@ import icon_close from '../assets/icon_close_modal.png';
 import {getUUID} from '../utils/UUIDUtils';
 import {saveData, getData} from '../utils/DBUtils';
 
+export const key = 'accountData';
+export const array = ['游戏', '平台', '银行卡', '其他'];
+
 const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
-    const array = ['游戏', '平台', '银行卡', '其他'];
-    const key = 'accountData';
     const [display, setDisplay] = useState(false);
     const [id, setId] = useState<string>('');
     const [select, setselect] = useState(0);
@@ -59,10 +60,10 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
         setId(getUUID());
         setDisplay(true);
         //清空
-        setselect(0)
-        setDesignation("")
-        setAccount("")
-        setPassword("")
+        setselect(0);
+        setDesignation('');
+        setAccount('');
+        setPassword('');
     };
     const hide = () => {
         setDisplay(false);
