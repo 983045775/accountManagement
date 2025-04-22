@@ -9,21 +9,60 @@ import {
     TextInput,
     KeyboardAvoidingView,
     Platform,
+    Alert,
 } from 'react-native';
 // @ts-ignore
 import icon_close from '../assets/icon_close_modal.png';
+import {getUUID} from '../utils/UUIDUtils';
+import {saveData, getData} from '../utils/DBUtils';
 
 const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
+    const array = ['游戏', '平台', '银行卡', '其他'];
+    const key = 'accountData';
     const [display, setDisplay] = useState(false);
+    const [id, setId] = useState<string>('');
     const [select, setselect] = useState(0);
     const [designationState, setDesignation] = useState('');
     const [accountState, setAccount] = useState('');
     const [passwordState, setPassword] = useState('');
-
-    const saveSubmit = () => {};
+    const saveSubmit = () => {
+        const data = {
+            id: id,
+            type: array[select],
+            name: designationState,
+            account: accountState,
+            pwd: passwordState,
+        };
+        getData(key)
+            .then(value => {
+                let array: any[] =
+                    typeof value === 'string' ? JSON.parse(value) : [];
+                array.push(data);
+                saveData(key, JSON.stringify(array))
+                    .then(() => {
+                        getData(key).then(data => {
+                            console.log(data);
+                        });
+                        setDisplay(false);
+                        Alert.alert('保存成功');
+                    })
+                    .catch(() => {
+                        Alert.alert('保存失败');
+                    });
+            })
+            .catch(e => {
+                console.error(e);
+            });
+    };
 
     const show = () => {
+        setId(getUUID());
         setDisplay(true);
+        //清空
+        setselect(0)
+        setDesignation("")
+        setAccount("")
+        setPassword("")
     };
     const hide = () => {
         setDisplay(false);
@@ -73,8 +112,6 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
         );
     };
     const renderChoose = () => {
-        const array = ['游戏', '平台', '银行卡', '其他'];
-
         const getButton = () => {
             return array.map((item, index) => {
                 return (
