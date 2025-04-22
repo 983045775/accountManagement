@@ -119,7 +119,7 @@ function Home() {
             item => section.title === item,
         );
 
-        const isRotate: boolean = datamap[findIndex];
+        const isShow: boolean = datamap[findIndex];
         const styles = StyleSheet.create({
             root: {
                 borderTopLeftRadius: 8,
@@ -154,7 +154,14 @@ function Home() {
             },
         });
         return (
-            <View style={styles.root}>
+            <View
+                style={[
+                    styles.root,
+                    {
+                        borderBottomRightRadius: isShow ? 0 : 8,
+                        borderBottomLeftRadius: isShow ? 0 : 8,
+                    },
+                ]}>
                 <Image
                     style={styles.img}
                     source={
@@ -189,12 +196,12 @@ function Home() {
                         animation={{
                             from: {
                                 transform: [
-                                    {rotate: isRotate ? '-90deg' : '0deg'},
+                                    {rotate: isShow ? '-90deg' : '0deg'},
                                 ],
                             },
                             to: {
                                 transform: [
-                                    {rotate: isRotate ? '0deg' : '-90deg'},
+                                    {rotate: isShow ? '0deg' : '-90deg'},
                                 ],
                             },
                         }}
@@ -240,6 +247,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     title: {
+        marginTop: 10,
         fontWeight: 'bold',
         fontSize: 18,
     },
