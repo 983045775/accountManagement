@@ -1,16 +1,14 @@
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
-    Text,
-    View,
-    StyleSheet,
-    TouchableOpacity,
     Image,
     SectionList,
-    Animated,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import {getData} from '../utils/DBUtils';
-import {key} from '../view/AddAccountDialog';
-import {array} from '../view/AddAccountDialog';
+import {array, key} from '../view/AddAccountDialog';
 import AddAccountDialog from './AddAccountDialog';
 // @ts-ignore
 import icon_add from '../assets/icon_add.png';
@@ -24,6 +22,7 @@ import icon_bank from '../assets/icon_bank.png';
 import icon_other from '../assets/icon_other.png';
 // @ts-ignore
 import icon_platform from '../assets/icon_platform.png';
+import * as Animatable from 'react-native-animatable';
 
 function Home() {
     const [showdata, setShowData] = useState([]);
@@ -116,6 +115,11 @@ function Home() {
     };
     const HeadSectionRender = (info: any) => {
         const {section} = info;
+        const findIndex: number = array.findIndex(
+            item => section.title === item,
+        );
+
+        const isRotate: boolean = datamap[findIndex];
         const styles = StyleSheet.create({
             root: {
                 borderTopLeftRadius: 8,
@@ -181,18 +185,22 @@ function Home() {
                         }
                         setDatamap(newValue);
                     }}>
-                    <Animated.Image
-                        source={icon_arrow}
-                        style={[
-                            styles.moreImg,
-                            {
+                    <Animatable.Image
+                        animation={{
+                            from: {
                                 transform: [
-                                    {
-                                        rotate: '-90deg',
-                                    },
+                                    {rotate: isRotate ? '-90deg' : '0deg'},
                                 ],
                             },
-                        ]}
+                            to: {
+                                transform: [
+                                    {rotate: isRotate ? '0deg' : '-90deg'},
+                                ],
+                            },
+                        }}
+                        duration={400}
+                        source={icon_arrow}
+                        style={[styles.moreImg]}
                     />
                 </TouchableOpacity>
             </View>
