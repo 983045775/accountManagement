@@ -45,12 +45,10 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
                 //判断是修改还是添加 TODO
                 if (isChange) {
                     //修改的
-                    const findDataIndex = array.findIndex(
-                        item => item.id === id,
+                    const newArray = array.filter((item, _) =>
+                        item.id !== id
                     );
-                    const newArray = array.map((item, index) =>
-                        index === findDataIndex ? data : item,
-                    );
+                    newArray.push(data)
                     removeData(key).then(() => {
                         saveData(key, JSON.stringify(newArray)).then(() => {
                             setDisplay(false);
@@ -100,9 +98,8 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
     const LongDeleteByID = (id: string) => {
         getData(key).then(result => {
             const arrayParse: any[] = JSON.parse(result!!);
-            const findDataIndex = arrayParse.findIndex(item => item.id === id);
-            const newArray = arrayParse.filter((_, index) =>
-                index !== findDataIndex
+            const newArray = arrayParse.filter((item, _) =>
+                item.id !== id
             );
             removeData(key).then(() => {
                 saveData(key, JSON.stringify(newArray)).then(() => {
