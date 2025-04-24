@@ -14,7 +14,7 @@ import {
 // @ts-ignore
 import icon_close from '../assets/icon_close_modal.png';
 import {getUUID} from '../utils/UUIDUtils';
-import {saveData, getData} from '../utils/DBUtils';
+import {saveData, getData, removeData} from '../utils/DBUtils';
 
 export const key = 'accountData';
 export const array: string[] = ['游戏', '平台', '银行卡', '其他'];
@@ -29,6 +29,7 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
     const [designationState, setDesignation] = useState('');
     const [accountState, setAccount] = useState('');
     const [passwordState, setPassword] = useState('');
+
     const saveSubmit = () => {
         const data = {
             id: id,
@@ -42,20 +43,37 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
                 let array: any[] =
                     typeof value === 'string' ? JSON.parse(value) : [];
                 //判断是修改还是添加 TODO
-                const data = array.find((item: any) => item.id === id);
-                array.push(data);
-                saveData(key, JSON.stringify(array))
-                    .then(() => {
-                        getData(key).then(data => {
-                            console.log(data);
+                if (isChange) {
+                    //修改的
+                    const findDataIndex = array.findIndex(
+                        item => item.id === id,
+                    );
+                    const newArray = array.map((item, index) =>
+                        index === findDataIndex ? data : item,
+                    );
+                    removeData(key).then(() => {
+                        saveData(key, JSON.stringify(newArray)).then(() => {
+                            setDisplay(false);
+                            Alert.alert('更新成功');
+                            refreshData();
                         });
-                        setDisplay(false);
-                        Alert.alert('保存成功');
-                        refreshData();
-                    })
-                    .catch(() => {
-                        Alert.alert('保存失败');
                     });
+                } else {
+                    //新增的
+                    array.push(data);
+                    saveData(key, JSON.stringify(array))
+                        .then(() => {
+                            getData(key).then(data => {
+                                console.log(data);
+                            });
+                            setDisplay(false);
+                            Alert.alert('保存成功');
+                            refreshData();
+                        })
+                        .catch(() => {
+                            Alert.alert('保存失败');
+                        });
+                }
             })
             .catch(e => {
                 console.error(e);
@@ -65,13 +83,13 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
         setIsChange(true);
         getData(key)
             .then(result => {
-                console.log(result);
                 setDisplay(true);
                 const arrayParse: any[] = JSON.parse(result!!);
                 const data = arrayParse.find((item: any) => item.id === id);
                 //根据id查询数据
                 const select: number = array.indexOf(data.type);
-                console.log(data.type);
+                // @ts-ignore
+                setId(id);
                 setselect(select);
                 setDesignation(data.name);
                 setAccount(data.account);
@@ -250,8 +268,6 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
                                 setPassword(text);
                                 break;
                         }
-
-                        console.log(designationState);
                     }}
                 />
             </View>
