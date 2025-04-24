@@ -25,6 +25,7 @@ import icon_platform from '../assets/icon_platform.png';
 import * as Animatable from 'react-native-animatable';
 
 function Home() {
+    const [showPwd, setShowPwd] = useState(true);
     const [showdata, setShowData] = useState([]);
 
     useEffect(() => {
@@ -50,6 +51,13 @@ function Home() {
             // @ts-ignore
             setShowData(resultData);
         });
+    };
+    const getPwdLengthString = (length: number) => {
+        let str = '';
+        for (let i = 0; i < length; i++) {
+            str = str + '*';
+        }
+        return str;
     };
 
     const AddAccountRef = useRef(null);
@@ -110,7 +118,7 @@ function Home() {
         return (
             <TouchableOpacity
                 activeOpacity={0.7}
-                onLongPress={()=>{
+                onLongPress={() => {
                     AddAccountRef.current.longDelete(item.id);
                 }}
                 onPress={() => {
@@ -121,7 +129,11 @@ function Home() {
                     <Text style={styles.title}>{item.name}</Text>
                     <View style={styles.itemView}>
                         <Text style={styles.txt}>{item.account}</Text>
-                        <Text style={styles.txt}>{item.pwd}</Text>
+                        <Text style={styles.txt}>
+                            {showPwd
+                                ? item.pwd
+                                : getPwdLengthString(item.pwd.length)}
+                        </Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -140,7 +152,7 @@ function Home() {
                 borderTopLeftRadius: 8,
                 borderTopRightRadius: 8,
                 alignItems: 'center',
-                marginTop: 20,
+                marginTop: section.title === array[0] ? 0 : 20,
                 backgroundColor: 'white',
                 flexDirection: 'row',
                 height: 50,
@@ -232,6 +244,13 @@ function Home() {
     return (
         <View style={styles.root}>
             <Text style={styles.title}>{'账号管理'}</Text>
+            <TouchableOpacity
+                style={styles.pwdButton}
+                onPress={() => {
+                    setShowPwd(!showPwd);
+                }}>
+                <Text>{showPwd ? '隐藏密码' : '展示密码'}</Text>
+            </TouchableOpacity>
             <SectionList
                 style={styles.sectionListView}
                 keyExtractor={(item, index) => `item=${item}+index${index}`}
@@ -280,6 +299,14 @@ const styles = StyleSheet.create({
     sectionListView: {
         marginTop: 12,
         width: '95%',
+    },
+    pwdButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 10,
+        right: 20,
+        height: 40,
     },
 });
 
