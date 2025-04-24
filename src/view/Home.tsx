@@ -28,6 +28,10 @@ function Home() {
     const [showdata, setShowData] = useState([]);
 
     useEffect(() => {
+        refreshDataPage()
+    }, []);
+
+    const refreshDataPage: () => void = () => {
         getData(key).then(result => {
             let list: any[] =
                 typeof result === 'string' ? JSON.parse(result) : [];
@@ -46,7 +50,7 @@ function Home() {
             // @ts-ignore
             setShowData(resultData);
         });
-    }, []);
+    };
 
     const AddAccountRef = useRef(null);
 
@@ -225,7 +229,7 @@ function Home() {
                 renderItem={sectionRender}
                 renderSectionHeader={HeadSectionRender}
             />
-            <AddAccountDialog ref={AddAccountRef} />
+            <AddAccountDialog ref={AddAccountRef} refreshData={refreshDataPage} />
             <TouchableOpacity
                 onPress={() => {
                     if (AddAccountRef.current != null) {

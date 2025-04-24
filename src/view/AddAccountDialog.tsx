@@ -20,6 +20,8 @@ export const key = 'accountData';
 export const array: string[] = ['游戏', '平台', '银行卡', '其他'];
 
 const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
+    // @ts-ignore
+    const {refreshData} = props;
     const [display, setDisplay] = useState(false);
     const [id, setId] = useState<string>('');
     const [select, setselect] = useState(0);
@@ -46,6 +48,7 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
                         });
                         setDisplay(false);
                         Alert.alert('保存成功');
+                        refreshData();
                     })
                     .catch(() => {
                         Alert.alert('保存失败');
