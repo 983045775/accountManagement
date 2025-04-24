@@ -79,7 +79,7 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
                 console.error(e);
             });
     };
-    const changePage = (id: String) => {
+    const changePage = (id: string) => {
         setIsChange(true);
         getData(key)
             .then(result => {
@@ -88,7 +88,6 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
                 const data = arrayParse.find((item: any) => item.id === id);
                 //根据id查询数据
                 const select: number = array.indexOf(data.type);
-                // @ts-ignore
                 setId(id);
                 setselect(select);
                 setDesignation(data.name);
@@ -96,6 +95,23 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
                 setPassword(data.pwd);
             })
             .catch(() => {});
+    };
+
+    const LongDeleteByID = (id: string) => {
+        getData(key).then(result => {
+            const arrayParse: any[] = JSON.parse(result!!);
+            const findDataIndex = arrayParse.findIndex(item => item.id === id);
+            const newArray = arrayParse.filter((_, index) =>
+                index !== findDataIndex
+            );
+            removeData(key).then(() => {
+                saveData(key, JSON.stringify(newArray)).then(() => {
+                    setDisplay(false);
+                    Alert.alert('删除成功');
+                    refreshData();
+                });
+            });
+        });
     };
 
     const show = () => {
@@ -116,6 +132,7 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
             showAdd: show,
             hideAdd: hide,
             changeData: changePage,
+            longDelete: LongDeleteByID,
         };
     });
 

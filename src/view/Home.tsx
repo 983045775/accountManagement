@@ -110,6 +110,9 @@ function Home() {
         return (
             <TouchableOpacity
                 activeOpacity={0.7}
+                onLongPress={()=>{
+                    AddAccountRef.current.longDelete(item.id);
+                }}
                 onPress={() => {
                     // @ts-ignore
                     AddAccountRef.current.changeData(item.id);
