@@ -28,7 +28,7 @@ function Home() {
     const [showdata, setShowData] = useState([]);
 
     useEffect(() => {
-        refreshDataPage()
+        refreshDataPage();
     }, []);
 
     const refreshDataPage: () => void = () => {
@@ -108,13 +108,20 @@ function Home() {
             },
         });
         return (
-            <View style={styles.root}>
-                <Text style={styles.title}>{item.name}</Text>
-                <View style={styles.itemView}>
-                    <Text style={styles.txt}>{item.account}</Text>
-                    <Text style={styles.txt}>{item.pwd}</Text>
+            <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                    // @ts-ignore
+                    AddAccountRef.current.changeData(item.id);
+                }}>
+                <View style={styles.root}>
+                    <Text style={styles.title}>{item.name}</Text>
+                    <View style={styles.itemView}>
+                        <Text style={styles.txt}>{item.account}</Text>
+                        <Text style={styles.txt}>{item.pwd}</Text>
+                    </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     };
     const HeadSectionRender = (info: any) => {
@@ -229,7 +236,10 @@ function Home() {
                 renderItem={sectionRender}
                 renderSectionHeader={HeadSectionRender}
             />
-            <AddAccountDialog ref={AddAccountRef} refreshData={refreshDataPage} />
+            <AddAccountDialog
+                ref={AddAccountRef}
+                refreshData={refreshDataPage}
+            />
             <TouchableOpacity
                 onPress={() => {
                     if (AddAccountRef.current != null) {

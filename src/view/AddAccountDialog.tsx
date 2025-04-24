@@ -23,6 +23,7 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
     // @ts-ignore
     const {refreshData} = props;
     const [display, setDisplay] = useState(false);
+    const [isChange, setIsChange] = useState(false);
     const [id, setId] = useState<string>('');
     const [select, setselect] = useState(0);
     const [designationState, setDesignation] = useState('');
@@ -40,6 +41,8 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
             .then(value => {
                 let array: any[] =
                     typeof value === 'string' ? JSON.parse(value) : [];
+                //判断是修改还是添加 TODO
+                const data = array.find((item: any) => item.id === id);
                 array.push(data);
                 saveData(key, JSON.stringify(array))
                     .then(() => {
@@ -58,9 +61,28 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
                 console.error(e);
             });
     };
+    const changePage = (id: String) => {
+        setIsChange(true);
+        getData(key)
+            .then(result => {
+                console.log(result);
+                setDisplay(true);
+                const arrayParse: any[] = JSON.parse(result!!);
+                const data = arrayParse.find((item: any) => item.id === id);
+                //根据id查询数据
+                const select: number = array.indexOf(data.type);
+                console.log(data.type);
+                setselect(select);
+                setDesignation(data.name);
+                setAccount(data.account);
+                setPassword(data.pwd);
+            })
+            .catch(() => {});
+    };
 
     const show = () => {
         setId(getUUID());
+        setIsChange(false);
         setDisplay(true);
         //清空
         setselect(0);
@@ -75,6 +97,7 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
         return {
             showAdd: show,
             hideAdd: hide,
+            changeData: changePage,
         };
     });
 
@@ -105,7 +128,9 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
         });
         return (
             <View style={styles.root}>
-                <Text style={styles.title}>{'添加账号'}</Text>
+                <Text style={styles.title}>
+                    {isChange ? '修改账号' : '添加账号'}
+                </Text>
                 <TouchableOpacity
                     style={styles.close}
                     activeOpacity={0.7}
