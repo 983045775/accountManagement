@@ -83,14 +83,14 @@ const addAccount = React.forwardRef(function AddAccountDialog(props, ref) {
             .then(result => {
                 setDisplay(true);
                 const arrayParse: any[] = JSON.parse(result!!);
-                const data = arrayParse.find((item: any) => item.id === id);
+                const datas =  arrayParse.filter((item,_)=>item.id === id);
                 //根据id查询数据
-                const select: number = array.indexOf(data.type);
+                const select: number = array.indexOf(datas[0].type);
                 setId(id);
                 setselect(select);
-                setDesignation(data.name);
-                setAccount(data.account);
-                setPassword(data.pwd);
+                setDesignation(datas[0].name);
+                setAccount(datas[0].account);
+                setPassword(datas[0].pwd);
             })
             .catch(() => {});
     };
